@@ -75,6 +75,34 @@ export default class Clip {
         opts.easing && this.setEasing(opts.easing);
     }
 
+    stepToTime(time: number): boolean {
+        const life = this._life;
+        let percent = time / life;
+        if (percent < 0) {
+            percent = 0;
+        }
+
+        percent = Math.min(percent, 1);
+
+        const easingFunc = this.easingFunc;
+        const schedule = easingFunc ? easingFunc(percent) : percent;
+
+        this.onframe(schedule);
+
+        // 结束
+        if (percent === 1) {
+            if (this.loop) {
+                // Restart
+                this.onrestart();
+            }
+            else {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
     step(globalTime: number, deltaTime: number): boolean {
         // Set startTime on first step, or _startTime may has milleseconds different between clips
         // PENDING

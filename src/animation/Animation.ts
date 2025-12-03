@@ -51,6 +51,7 @@ export default class Animation extends Eventful {
 
     private _running = false
 
+    private _stepTime = 0
     private _time = 0
     private _pausedTime = 0
     private _pauseStart = 0
@@ -132,6 +133,33 @@ export default class Animation extends Eventful {
         animator.animation = null;
     }
 
+    stepToTime(time: number) {
+        this._stepTime = time;
+    }
+
+    stepUpdate(notTriggerFrameAndStageUpdate?: boolean) {
+        let clip = this._head;
+
+        while (clip) {
+            // Save the nextClip before step.
+            // So the loop will not been affected if the clip is removed in the callback
+            const nextClip = clip.next;
+            let finished = clip.stepToTime(this._stepTime);
+            if (finished) {
+                clip.ondestroy();
+                this.removeClip(clip);
+                clip = nextClip;
+            }
+            else {
+                clip = nextClip;
+            }
+        }
+
+        if (!notTriggerFrameAndStageUpdate) {
+            this.stage.update && this.stage.update();
+        }
+    }
+
     update(notTriggerFrameAndStageUpdate?: boolean) {
         const time = getTime() - this._pausedTime;
         const delta = time - this._time;
@@ -173,7 +201,8 @@ export default class Animation extends Eventful {
         function step() {
             if (self._running) {
                 requestAnimationFrame(step);
-                !self._paused && self.update();
+                // !self._paused && self.update();
+                !self._paused && self.stepUpdate();
             }
         }
 

@@ -218,6 +218,13 @@ class ZRender {
     }
 
     /**
+     * Seek the canvas
+     */
+    stepToTime(time: number) {
+        this.animation.stepToTime(time);
+    }
+
+    /**
      * Repaint the canvas immediately
      */
     refreshImmediately(fromInside?: boolean) {

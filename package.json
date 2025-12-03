@@ -26,7 +26,8 @@
     "watch:lib": "npx tsc-watch -m ES2015 --outDir lib --synchronousWatchDirectory --onSuccess \"node build/processLib.js\"",
     "test": "npx jest --config test/ut/jest.config.js",
     "lint": "npx eslint src/**/*.ts",
-    "checktype": "tsc --noEmit"
+    "checktype": "tsc --noEmit",
+    "postpack": "cpy zrender-6.0.0.tgz ../echarts/deps/ --flat"
   },
   "license": "BSD-3-Clause",
   "types": "index.d.ts",
@@ -49,6 +50,7 @@
     "@typescript-eslint/parser": "^4.33.0",
     "chalk": "^3.0.0",
     "commander": "2.11.0",
+    "cpy-cli": "^6.0.0",
     "eslint": "6.3.0",
     "fs-extra": "4.0.2",
     "globby": "^11.0.4",
