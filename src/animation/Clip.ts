@@ -89,20 +89,9 @@ export default class Clip {
 
         this.onframe(schedule);
 
-        // 结束
-        if (percent === 1) {
-            if (this.loop) {
-                // Restart
-                this.onrestart();
-            }
-            else {
-                return true;
-            }
-        }
-
         return false;
     }
-    
+
     step(globalTime: number, deltaTime: number): boolean {
         // Set startTime on first step, or _startTime may has milleseconds different between clips
         // PENDING

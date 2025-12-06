@@ -51,6 +51,7 @@ export default class Animation extends Eventful {
 
     private _running = false
 
+    private _nleMode = true
     private _stepTime = 0
     private _time = 0
     private _pausedTime = 0
@@ -135,6 +136,7 @@ export default class Animation extends Eventful {
 
     stepToTime(time: number) {
         this._stepTime = time;
+        this.stepUpdate(undefined);
     }
 
     stepUpdate(notTriggerFrameAndStageUpdate?: boolean) {
@@ -161,6 +163,12 @@ export default class Animation extends Eventful {
     }
 
     update(notTriggerFrameAndStageUpdate?: boolean) {
+        // 打开图表后显示第0帧
+        if (this._nleMode) {
+            this.stepToTime(0);
+            return;
+        }
+
         const time = getTime() - this._pausedTime;
         const delta = time - this._time;
         let clip = this._head;
@@ -201,8 +209,7 @@ export default class Animation extends Eventful {
         function step() {
             if (self._running) {
                 requestAnimationFrame(step);
-                // !self._paused && self.update();
-                !self._paused && self.stepUpdate();
+                !self._paused && self.update();
             }
         }
 
@@ -213,7 +220,7 @@ export default class Animation extends Eventful {
      * Start animation.
      */
     start() {
-        if (this._running) {
+        if (this._running || this._nleMode) {
             return;
         }
 
